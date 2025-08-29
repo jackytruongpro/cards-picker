@@ -2,9 +2,9 @@
 
 /* Style de base pour MOBILE */
 .card {
-  /* Cartes plus petites pour tenir sur un écran de mobile */
-  width: 75px; 
-  height: 75px; 
+  /* Cartes très petites pour tenir sur une ligne de 10 */
+  width: 30px; 
+  height: 30px; 
   perspective: 1000px;
   cursor: pointer;
   background-color: transparent;
@@ -17,7 +17,7 @@
   height: 100%;
   transition: transform 0.7s;
   transform-style: preserve-3d;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2); /* Ombre réduite */
   border-radius: 50%;
 }
 
@@ -34,7 +34,7 @@
   border-radius: 50%;
   background-size: cover;
   background-position: center;
-  border: 2px solid white; /* Bordure plus fine sur mobile */
+  border: 1px solid white; /* Bordure très fine */
 }
 
 .card-face--back {
@@ -45,12 +45,12 @@
 /* -- Styles pour PC (écrans plus larges que 768px) -- */
 @media (min-width: 768px) {
   .card {
-    /* Cartes plus grandes sur PC */
-    width: 150px;
-    height: 150px;
+    /* Taille adaptée pour une ligne de 20 sur un écran large */
+    width: 60px;
+    height: 60px;
   }
   
   .card-face {
-     border: 4px solid white; /* Bordure plus épaisse sur PC */
+     border: 2px solid white; /* Bordure un peu plus épaisse sur PC */
   }
 }

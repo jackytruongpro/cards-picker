@@ -31,19 +31,20 @@ p {
 /* Style de base pour MOBILE */
 .card-grid {
   display: grid;
-  /* On force 4 colonnes sur mobile */
-  grid-template-columns: repeat(4, 1fr); 
-  gap: 10px; /* Espace réduit sur mobile */
+  /* On force 10 colonnes sur mobile */
+  grid-template-columns: repeat(10, 1fr); 
+  gap: 5px; /* Espace très réduit pour tout faire tenir */
   justify-items: center;
-  max-width: 900px;
+  max-width: 100%; /* On prend toute la largeur disponible */
   margin: 20px auto;
 }
+
 
 /* -- Styles pour PC (écrans plus larges que 768px) -- */
 @media (min-width: 768px) {
   .card-grid {
-    /* Sur PC, la grille s'adapte automatiquement pour remplir l'espace */
-    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-    gap: 25px; /* Espace plus grand sur PC */
+    /* On force 20 colonnes sur PC */
+    grid-template-columns: repeat(20, 1fr);
+    gap: 10px; /* Espace un peu plus grand sur PC */
   }
 }
