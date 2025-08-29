@@ -35,8 +35,8 @@ function importAll(r) {
   return r.keys().map(r);
 }
 
-// ✅ On importe automatiquement toutes les images du dossier spécifié.
-// Mettez à jour le chemin si votre structure de dossier change.
+// On importe automatiquement toutes les images du dossier spécifié.
+// Assurez-vous que le chemin est correct par rapport à l'emplacement de App.js.
 const images = importAll(require.context('./assets/images/cards/oracle/tea_leaf/card_illustration', false, /\.(png|jpe?g|svg|jpg)$/));
 
 
@@ -54,6 +54,7 @@ function App() {
   const [isSliderOpen, setIsSliderOpen] = useState(false);
   const [sliderStartIndex, setSliderStartIndex] = useState(0);
   const [isSavesPanelOpen, setIsSavesPanelOpen] = useState(false);
+  const [cardsForSlider, setCardsForSlider] = useState([]); // État dédié pour les cartes du slider
 
 
   // --- Effets de Bord (Hooks useEffect) ---
@@ -156,6 +157,15 @@ function App() {
     }
   };
 
+  /** Ouvre le slider avec un jeu de cartes spécifique. */
+  const handleOpenSlider = (cardsToShow, startIndex = 0) => {
+    if (cardsToShow && cardsToShow.length > 0) {
+      setCardsForSlider(cardsToShow);
+      setSliderStartIndex(startIndex);
+      setIsSliderOpen(true);
+    }
+  };
+
   // Calcule les IDs des cartes sélectionnées pour déterminer lesquelles retourner
   const selectedIds = selectedCards.map(card => card.id);
 
@@ -166,8 +176,8 @@ function App() {
     <div className="App">
       
       <main className="main-content">
-        <h1>Tea Leaf Oracle</h1>
-        <p>In case you are in an emergency, use me hehe - puwi</p>
+        <h1>Mon Tirage de Cartes</h1>
+        <p>Cliquez sur une carte pour la révéler, puis sauvegardez votre tirage.</p>
         <div className="card-grid">
           {cardsOnGrid.map(card => (
             <Card 
@@ -183,7 +193,7 @@ function App() {
       <SelectionBar 
         selectedCards={selectedCards}
         onCardClick={setEnlargedCard}
-        onOpenSlider={(index) => { setSliderStartIndex(index); setIsSliderOpen(true); }}
+        onOpenSlider={() => handleOpenSlider(selectedCards, 0)}
         onSave={handleSaveSession}
         onOpenSaves={() => setIsSavesPanelOpen(true)}
         onReset={handleReset}
@@ -195,11 +205,18 @@ function App() {
         onClose={() => setIsSavesPanelOpen(false)}
         onLoad={handleLoadSession}
         onDelete={handleDeleteSession}
+        onViewSession={(cards) => handleOpenSlider(cards, 0)}
       />
 
       {enlargedCard && <CardDetailModal card={enlargedCard} onClose={() => setEnlargedCard(null)} />}
       
-      {isSliderOpen && <SliderModal cards={selectedCards} startIndex={sliderStartIndex} onClose={() => setIsSliderOpen(false)} />}
+      {isSliderOpen && (
+        <SliderModal 
+          cards={cardsForSlider} 
+          startIndex={sliderStartIndex} 
+          onClose={() => setIsSliderOpen(false)} 
+        />
+      )}
 
     </div>
   );

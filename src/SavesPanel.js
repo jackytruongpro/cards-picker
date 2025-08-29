@@ -2,7 +2,8 @@
 import React from 'react';
 import './SavesPanel.css';
 
-const SavesPanel = ({ isOpen, sessions, onClose, onLoad, onDelete }) => {
+// On récupère la nouvelle prop `onViewSession`
+const SavesPanel = ({ isOpen, sessions, onClose, onLoad, onDelete, onViewSession }) => {
   return (
     <>
       <div 
@@ -19,14 +20,27 @@ const SavesPanel = ({ isOpen, sessions, onClose, onLoad, onDelete }) => {
             sessions.map(session => (
               <div key={session.id} className="save-item">
                 <div className="save-item-info">
-                  {/* MODIFICATION ICI : On affiche le nom en grand */}
                   <strong className="save-item-name">{session.name}</strong>
-                  {/* Et la date/nombre de cartes en plus petit */}
                   <span className="save-item-details">
                     {session.date} ({session.cards.length} cartes)
                   </span>
                 </div>
+
+                {/* NOUVEAU : Conteneur pour les miniatures de cartes */}
+                <div className="save-item-cards-scroller">
+                  {session.cards.map(card => (
+                    <div
+                      key={card.id}
+                      className="save-item-card-thumbnail"
+                      style={{ backgroundImage: `url(${card.contentImage})` }}
+                      title={card.name}
+                    />
+                  ))}
+                </div>
+
                 <div className="save-item-actions">
+                  {/* NOUVEAU : Bouton "Voir" */}
+                  <button onClick={() => onViewSession(session.cards)} className="view-button">Voir</button>
                   <button onClick={() => onLoad(session.id)} className="load-button">Charger</button>
                   <button onClick={() => onDelete(session.id)} className="delete-button">Supprimer</button>
                 </div>

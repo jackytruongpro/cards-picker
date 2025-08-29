@@ -14,6 +14,7 @@
 .saves-panel-backdrop.is-visible {
   opacity: 1;
   visibility: visible;
+  z-index: 1;
 }
 
 /* Le panneau */
@@ -68,72 +69,16 @@
 
 .save-item {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 15px;
-  margin-bottom: 10px;
-  background-color: white;
-  border-radius: 8px;
-  border: 1px solid #e9ecef;
-}
-
-.save-item-info {
-  display: flex;
+  /* On change la direction pour que les éléments s'empilent verticalement */
   flex-direction: column;
-}
-.save-item-info strong {
-  color: #212529;
-}
-.save-item-info span {
-  font-size: 0.9rem;
-  color: #6c757d;
-}
-
-.save-item-actions {
-  display: flex;
-  gap: 8px;
-}
-
-.save-item-actions button {
-  border: 1px solid transparent;
-  padding: 6px 12px;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.load-button {
-  background-color: #28a745;
-  color: white;
-}
-.load-button:hover {
-  background-color: #218838;
-}
-
-.delete-button {
-  background-color: #dc3545;
-  color: white;
-}
-.delete-button:hover {
-  background-color: #c82333;
-}
-
-.no-saves-text {
-  text-align: center;
-  padding: 40px 20px;
-  color: #6c757d;
-}
-
-.save-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  align-items: flex-start; /* Aligne tout à gauche */
   padding: 15px;
   margin-bottom: 10px;
   background-color: white;
   border-radius: 8px;
   border: 1px solid #e9ecef;
   transition: box-shadow 0.2s ease;
+  gap: 15px; /* Espace entre le titre, les cartes et les boutons */
 }
 .save-item:hover {
   box-shadow: 0 4px 12px rgba(0,0,0,0.08);
@@ -142,23 +87,68 @@
 .save-item-info {
   display: flex;
   flex-direction: column;
-  gap: 4px; /* Ajoute un petit espace entre le nom et les détails */
+  gap: 4px;
 }
 
-/* NOUVEAUX STYLES */
 .save-item-name {
-  font-size: 1.1rem; /* Police plus grande pour le nom */
+  font-size: 1.1rem;
   color: #212529;
-  font-weight: 600; /* Un peu plus gras */
+  font-weight: 600;
 }
 
 .save-item-details {
-  font-size: 0.85rem; /* Police plus petite pour les détails */
+  font-size: 0.85rem;
   color: #6c757d;
+}
+
+/* NOUVEAUX STYLES POUR LA GALERIE DE CARTES */
+.save-item-cards-scroller {
+  display: flex;
+  overflow-x: auto; /* Active le défilement horizontal */
+  flex-wrap: nowrap;
+  gap: 8px;
+  width: 100%;
+  padding-bottom: 10px; /* Espace pour la barre de scroll */
+}
+
+.save-item-card-thumbnail {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  flex-shrink: 0; /* Empêche les images de se compresser */
+  background-size: cover;
+  background-position: center;
+  border: 2px solid #ddd;
 }
 /* FIN NOUVEAUX STYLES */
 
 .save-item-actions {
   display: flex;
   gap: 8px;
+  width: 100%; /* Prend toute la largeur pour aligner à droite si besoin */
+  justify-content: flex-end; /* Aligne les boutons à droite */
 }
+
+.save-item-actions button {
+  border: 1px solid transparent;
+  padding: 6px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-weight: bold;
+}
+
+/* NOUVEAU STYLE POUR LE BOUTON "Voir" */
+.view-button {
+  background-color: #17a2b8; /* Bleu-vert (info) */
+  color: white;
+}
+.view-button:hover {
+  background-color: #138496;
+}
+
+.load-button { background-color: #28a745; color: white; }
+.load-button:hover { background-color: #218838; }
+
+.delete-button { background-color: #dc3545; color: white; }
+.delete-button:hover { background-color: #c82333; }
