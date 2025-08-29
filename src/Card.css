@@ -1,0 +1,56 @@
+/* src/Card.css */
+
+/* Style de base pour MOBILE */
+.card {
+  /* Cartes plus petites pour tenir sur un écran de mobile */
+  width: 75px; 
+  height: 75px; 
+  perspective: 1000px;
+  cursor: pointer;
+  background-color: transparent;
+  border-radius: 50%;
+}
+
+.card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.7s;
+  transform-style: preserve-3d;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+  border-radius: 50%;
+}
+
+.card.is-flipped .card-inner {
+  transform: rotateY(180deg);
+}
+
+.card-face {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  border-radius: 50%;
+  background-size: cover;
+  background-position: center;
+  border: 2px solid white; /* Bordure plus fine sur mobile */
+}
+
+.card-face--back {
+  transform: rotateY(180deg);
+}
+
+
+/* -- Styles pour PC (écrans plus larges que 768px) -- */
+@media (min-width: 768px) {
+  .card {
+    /* Cartes plus grandes sur PC */
+    width: 150px;
+    height: 150px;
+  }
+  
+  .card-face {
+     border: 4px solid white; /* Bordure plus épaisse sur PC */
+  }
+}

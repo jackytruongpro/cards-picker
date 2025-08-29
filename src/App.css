@@ -1,0 +1,49 @@
+/* src/App.css */
+
+/* Le conteneur de l'application ne fait rien de spécial,
+   il sert juste à englober le tout. */
+.App {
+  text-align: center;
+  font-family: sans-serif;
+}
+
+/* C'est la zone principale de votre contenu (titre, grille de cartes).
+   La seule chose importante ici est le 'padding-bottom'.
+   Cette marge intérieure en bas est calculée pour être plus grande que la hauteur
+   de votre barre de sélection, pour que RIEN ne soit caché dessous.
+*/
+.main-content {
+  padding: 20px;
+  /* Assurez-vous que cette valeur est suffisante pour voir tout votre contenu */
+  padding-bottom: 250px; 
+}
+
+h1 {
+  color: #333;
+  margin-bottom: 10px;
+}
+
+p {
+  color: #666;
+  margin-bottom: 40px;
+}
+
+/* Style de base pour MOBILE */
+.card-grid {
+  display: grid;
+  /* On force 4 colonnes sur mobile */
+  grid-template-columns: repeat(4, 1fr); 
+  gap: 10px; /* Espace réduit sur mobile */
+  justify-items: center;
+  max-width: 900px;
+  margin: 20px auto;
+}
+
+/* -- Styles pour PC (écrans plus larges que 768px) -- */
+@media (min-width: 768px) {
+  .card-grid {
+    /* Sur PC, la grille s'adapte automatiquement pour remplir l'espace */
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 25px; /* Espace plus grand sur PC */
+  }
+}

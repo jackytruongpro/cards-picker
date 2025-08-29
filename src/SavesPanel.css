@@ -1,0 +1,164 @@
+/* src/SavesPanel.css */
+
+/* Le fond */
+.saves-panel-backdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  visibility: hidden;
+  z-index: 3000;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.saves-panel-backdrop.is-visible {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Le panneau */
+.saves-panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  height: 100%;
+  width: 400px;
+  max-width: 90vw;
+  background-color: #f8f9fa;
+  box-shadow: -4px 0 15px rgba(0, 0, 0, 0.1);
+  z-index: 3001;
+  transform: translateX(100%);
+  transition: transform 0.3s ease-in-out;
+  display: flex;
+  flex-direction: column;
+}
+
+.saves-panel.is-open {
+  transform: translateX(0);
+}
+
+.saves-panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  border-bottom: 1px solid #dee2e6;
+  background-color: white;
+}
+
+.saves-panel-header h3 {
+  margin: 0;
+  font-size: 1.2rem;
+  color: #343a40;
+}
+
+.close-panel-button {
+  background: none;
+  border: none;
+  font-size: 2rem;
+  cursor: pointer;
+  color: #6c757d;
+}
+
+.saves-list {
+  flex-grow: 1;
+  overflow-y: auto;
+  padding: 10px;
+}
+
+.save-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+  margin-bottom: 10px;
+  background-color: white;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+}
+
+.save-item-info {
+  display: flex;
+  flex-direction: column;
+}
+.save-item-info strong {
+  color: #212529;
+}
+.save-item-info span {
+  font-size: 0.9rem;
+  color: #6c757d;
+}
+
+.save-item-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.save-item-actions button {
+  border: 1px solid transparent;
+  padding: 6px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.load-button {
+  background-color: #28a745;
+  color: white;
+}
+.load-button:hover {
+  background-color: #218838;
+}
+
+.delete-button {
+  background-color: #dc3545;
+  color: white;
+}
+.delete-button:hover {
+  background-color: #c82333;
+}
+
+.no-saves-text {
+  text-align: center;
+  padding: 40px 20px;
+  color: #6c757d;
+}
+
+.save-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+  margin-bottom: 10px;
+  background-color: white;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+  transition: box-shadow 0.2s ease;
+}
+.save-item:hover {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.save-item-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px; /* Ajoute un petit espace entre le nom et les détails */
+}
+
+/* NOUVEAUX STYLES */
+.save-item-name {
+  font-size: 1.1rem; /* Police plus grande pour le nom */
+  color: #212529;
+  font-weight: 600; /* Un peu plus gras */
+}
+
+.save-item-details {
+  font-size: 0.85rem; /* Police plus petite pour les détails */
+  color: #6c757d;
+}
+/* FIN NOUVEAUX STYLES */
+
+.save-item-actions {
+  display: flex;
+  gap: 8px;
+}
