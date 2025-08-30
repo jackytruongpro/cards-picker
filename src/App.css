@@ -13,9 +13,10 @@
    de votre barre de sélection, pour que RIEN ne soit caché dessous.
 */
 .main-content {
+  margin-top: 10vh; /* ✅ AJOUTE UN ESPACE EN HAUT DE LA PAGE */
   padding: 20px;
-  /* Assurez-vous que cette valeur est suffisante pour voir tout votre contenu */
-  padding-bottom: 250px; 
+  /* Marge intérieure en bas pour que la barre de sélection ne cache rien */
+  padding-bottom: 250px;
 }
 
 h1 {

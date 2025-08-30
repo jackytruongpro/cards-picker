@@ -79,6 +79,7 @@
   border: 1px solid #e9ecef;
   transition: box-shadow 0.2s ease;
   gap: 15px; /* Espace entre le titre, les cartes et les boutons */
+  text-align: left;
 }
 .save-item:hover {
   box-shadow: 0 4px 12px rgba(0,0,0,0.08);
@@ -126,7 +127,7 @@
   display: flex;
   gap: 8px;
   width: 100%; /* Prend toute la largeur pour aligner à droite si besoin */
-  justify-content: flex-end; /* Aligne les boutons à droite */
+  justify-content: flex-start; /* Aligne les boutons à droite */
 }
 
 .save-item-actions button {
@@ -152,3 +153,97 @@
 
 .delete-button { background-color: #dc3545; color: white; }
 .delete-button:hover { background-color: #c82333; }
+
+/* Style pour la petite étiquette "Mensuel" */
+.month-save-tag {
+  background-color: #17a2b8;
+  color: white;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  font-weight: bold;
+  margin-left: 8px;
+}
+
+.save-item-details {
+  display: flex;
+  align-items: center;
+  font-size: 0.85rem;
+  color: #6c757d;
+}
+
+/* Style pour les boutons désactivés */
+.save-item-actions button:disabled {
+  background-color: #e9ecef;
+  color: #6c757d;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+/* --- NOUVEAUX STYLES --- */
+/* Conteneur pour le détail des mois dans une sauvegarde */
+.month-save-details {
+  width: 100%;
+}
+
+.month-save-section {
+  margin-bottom: 12px;
+}
+/* Ne pas mettre de marge sur le dernier mois */
+.month-save-section:last-child {
+  margin-bottom: 0;
+}
+
+.month-save-title {
+  margin: 0 0 8px 0;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.no-card-placeholder-small {
+  font-style: italic;
+  color: #aaa;
+  font-size: 0.8rem;
+  padding-left: 5px;
+}
+
+/* On ajoute une ligne de séparation au-dessus des boutons pour plus de clarté */
+.save-item-actions {
+  border-top: 1px solid #eee;
+  padding-top: 15px;
+  margin-top: 5px;
+}
+
+/* --- NOUVEAUX STYLES --- */
+
+/* Conteneur pour le titre du mois et le bouton "Voir" */
+.month-save-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+/* Style du bouton "Voir" spécifique à chaque mois */
+.view-month-save-button {
+  background-color: #6c757d;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 4px 10px;
+  font-size: 0.8rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.view-month-save-button:hover:not(:disabled) {
+  background-color: #5a6268;
+}
+
+.view-month-save-button:disabled {
+  background-color: #e9ecef;
+  cursor: not-allowed;
+  opacity: 0.7;
+}

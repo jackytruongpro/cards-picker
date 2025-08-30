@@ -17,9 +17,6 @@ const SelectionBar = ({ selectedCards, onCardClick, onOpenSlider, onSave, onOpen
           <button onClick={onSave} className="action-button primary" disabled={selectedCards.length === 0}>
             Sauvegarder
           </button>
-          <button onClick={onOpenSaves} className="action-button secondary">
-            Mes Tirages
-          </button>
         </div>
       </div>
       <div className="selected-cards-container">

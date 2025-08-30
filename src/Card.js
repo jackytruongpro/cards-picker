@@ -1,25 +1,33 @@
 // src/Card.js
-import React from 'react';
+import React, { useRef } from 'react';
 import './Card.css';
 
-const Card = ({ id, contentImage, coverImage, isFlipped, onFlip }) => {
+const Card = ({ id, contentImage, coverImage, isFlipped, onFlip, onAnimate, isHidden }) => {
+  const cardRef = useRef(null);
+
   const handleClick = () => {
-    // On ne retourne la carte que si elle n'est pas déjà retournée
     if (!isFlipped) {
       onFlip(id);
+      const rect = cardRef.current.getBoundingClientRect();
+      
+      // ✅ MODIFICATION ICI : On ajoute un `timestamp` pour rendre chaque clic unique
+      onAnimate({ id, contentImage, rect, timestamp: Date.now() });
     }
   };
 
   return (
-    <div className={`card ${isFlipped ? 'is-flipped' : ''}`} onClick={handleClick}>
+    <div 
+      ref={cardRef} 
+      className={`card ${isFlipped ? 'is-flipped' : ''} ${isHidden ? 'is-hidden' : ''}`} 
+      onClick={handleClick}
+    >
+      {/* ... (le reste du composant ne change pas) ... */}
       <div className="card-inner">
-        {/* Face avant (visible par défaut) : la couverture */}
         <div 
           className="card-face card-face--front" 
           style={{ backgroundImage: `url(${coverImage})` }}
         >
         </div>
-        {/* Face arrière (visible au clic) : l'illustration */}
         <div 
           className="card-face card-face--back" 
           style={{ backgroundImage: `url(${contentImage})` }}

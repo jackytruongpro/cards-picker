@@ -1,0 +1,164 @@
+/* src/MonthModePanel.css */
+
+.panel-toggle-button {
+  position: fixed;
+  top: 15px;
+  left: 15px;
+  z-index: 2000;
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  font-size: 1.5rem;
+  cursor: pointer;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+  transition: transform 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.panel-toggle-button.is-open {
+  /* Décale le bouton vers la droite quand le panneau est ouvert */
+  transform: translateX(315px);
+}
+
+.month-panel {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 300px;
+  background: #f8f9fa;
+  box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+  z-index: 1999;
+  transform: translateX(-100%); /* Caché par défaut */
+  transition: transform 0.3s ease-in-out;
+  display: flex;
+  flex-direction: column;
+}
+
+.month-panel.is-open {
+  transform: translateX(0); /* Affiche le panneau */
+}
+
+.month-panel-header {
+  padding: 20px;
+  border-bottom: 1px solid #ddd;
+  flex-shrink: 0; /* Empêche l'en-tête de rétrécir */
+}
+
+.month-panel-header h3 {
+  margin: 0;
+  font-size: 1.2rem;
+  color: #333;
+}
+
+.month-panel-content {
+  flex-grow: 1; /* Permet à cette section de prendre tout l'espace vertical disponible */
+  overflow-y: auto; /* Ajoute une barre de défilement si le contenu dépasse */
+  padding: 10px;
+}
+
+.month-section {
+  margin-bottom: 15px;
+}
+
+.month-section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 5px;
+  margin: 0 5px 10px 5px;
+}
+
+.month-section-header h4 {
+  margin: 0;
+  color: #333;
+}
+
+.view-month-button {
+  background-color: #6c757d; /* Gris secondaire */
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 4px 10px;
+  font-size: 0.8rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.view-month-button:hover:not(:disabled) {
+  background-color: #5a6268;
+}
+
+.view-month-button:disabled {
+  background-color: #e9ecef;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.cards-display {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  min-height: 40px; /* Hauteur minimale pour voir le placeholder "Vide" */
+  align-items: center;
+  padding: 0 5px;
+}
+
+.month-card-thumbnail {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-size: cover;
+  border: 2px solid white;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+
+.no-card-placeholder {
+  font-style: italic;
+  color: #999;
+  font-size: 0.9rem;
+  padding-left: 5px;
+}
+
+.month-panel-actions {
+  padding: 15px;
+  border-top: 1px solid #ddd;
+  display: flex;
+  gap: 10px;
+  flex-shrink: 0; /* Empêche la section des actions de rétrécir */
+  background-color: #fff;
+}
+
+.month-panel-actions button {
+  flex-grow: 1;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.month-panel-actions button:first-child {
+  background-color: #f0f0f0;
+}
+
+.month-panel-actions button:first-child:hover {
+  background-color: #e0e0e0;
+}
+
+.month-panel-actions button:last-child {
+  background-color: #007bff;
+  color: white;
+  border-color: #007bff;
+}
+
+.month-panel-actions button:last-child:hover {
+  background-color: #0056b3;
+}

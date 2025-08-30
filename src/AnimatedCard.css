@@ -1,0 +1,40 @@
+/* src/AnimatedCard.css */
+
+.animated-card {
+  /* Positionnement et style de base */
+  position: fixed;
+  z-index: 9999; /* Toujours au-dessus de tout */
+  border-radius: 50%;
+  background-size: cover;
+  background-position: center;
+  border: 4px solid white;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+  
+  /* On utilise des variables CSS pour définir la position de départ */
+  top: var(--start-top);
+  left: var(--start-left);
+  width: var(--start-width);
+  height: var(--start-height);
+  
+  /* La transition fluide pour toutes les propriétés */
+  transition: all 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+}
+
+/* État "agrandi" au centre de l'écran */
+.animated-card.active {
+  top: 50%;
+  left: 50%;
+  width: 40vh; /* Taille relative à la hauteur de l'écran */
+  height: 40vh;
+  transform: translate(-50%, -50%) rotate(360deg); /* Centrage parfait et rotation */
+}
+
+/* L'état "sortant" est identique à l'état initial,
+   la transition CSS s'occupera de l'animer pour retourner à sa place */
+.animated-card.leaving {
+  top: var(--start-top);
+  left: var(--start-left);
+  width: var(--start-width);
+  height: var(--start-height);
+  transform: translate(0, 0) rotate(0deg);
+}
