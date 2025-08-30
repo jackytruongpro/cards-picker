@@ -232,8 +232,8 @@ function App() {
       )}
 
       <main className="main-content">
-        <h1>Mon Tirage de Cartes</h1>
-        <p>Cliquez sur une carte pour la révéler, puis sauvegardez votre tirage.</p>
+        <h1>Tea Leaf Oracle Picker</h1>
+        <p>Use me when you are in an emergency hehe - puwi</p>
         <MonthModeToggle 
           isChecked={isMonthMode} 
           onChange={handleToggleMonthMode} 
