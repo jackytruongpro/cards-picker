@@ -11,7 +11,7 @@ import MonthModeToggle from './MonthModeToggle';
 import MonthSelectorModal from './MonthSelectorModal';
 import MonthModePanel from './MonthModePanel';
 import GlobalSavesButton from './GlobalSavesButton';
-import AnimatedCard from './AnimatedCard'; // Import du composant d'animation
+import AnimatedCard from './AnimatedCard';
 import './App.css';
 
 // --- Constantes et Fonctions Utilitaires ---
@@ -61,7 +61,7 @@ function App() {
   const [sliderStartIndex, setSliderStartIndex] = useState(0);
   const [cardsForSlider, setCardsForSlider] = useState([]);
   const [isSavesPanelOpen, setIsSavesPanelOpen] = useState(false);
-  const [animatingCard, setAnimatingCard] = useState(null); // Pour l'animation de clic
+  const [animatingCard, setAnimatingCard] = useState(null);
 
 
   // --- EFFETS (useEffect Hooks) ---
@@ -95,6 +95,7 @@ function App() {
   // --- GESTIONNAIRES D'ÉVÉNEMENTS (Handlers) ---
 
   const handleToggleMonthMode = (activated) => {
+    setCardsOnGrid(prevCards => shuffleArray(prevCards));
     setIsMonthMode(activated);
     if (activated) {
       setStandardSelectedCards([]);
@@ -139,6 +140,7 @@ function App() {
   };
 
   const handleMonthModeReset = () => {
+    setCardsOnGrid(prevCards => shuffleArray(prevCards));
     const initialAssignments = {};
     selectedMonths.forEach(month => { initialAssignments[month] = []; });
     setMonthCardAssignments(initialAssignments);
@@ -231,6 +233,7 @@ function App() {
 
       <main className="main-content">
         <h1>Mon Tirage de Cartes</h1>
+        <p>Cliquez sur une carte pour la révéler, puis sauvegardez votre tirage.</p>
         <MonthModeToggle 
           isChecked={isMonthMode} 
           onChange={handleToggleMonthMode} 
@@ -243,7 +246,6 @@ function App() {
               isFlipped={displayedSelectedIds.includes(card.id)} 
               onFlip={handleCardSelect}
               onAnimate={handleCardAnimation}
-              // ✅ MODIFICATION ICI : On passe une prop pour savoir si la carte doit être cachée
               isHidden={animatingCard?.id === card.id}
             />
           ))}
@@ -287,7 +289,6 @@ function App() {
 
       {animatingCard && (
         <AnimatedCard 
-          // ✅ MODIFICATION ICI : On ajoute la prop `key`
           key={animatingCard.timestamp} 
           cardData={animatingCard}
           onAnimationEnd={() => setAnimatingCard(null)}
