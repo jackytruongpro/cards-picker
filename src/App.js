@@ -107,10 +107,19 @@ function App() {
     }
   };
 
-  const handleMonthSelectionConfirm = (months) => {
-    setSelectedMonths(months);
+const handleMonthSelectionConfirm = (months) => {
+    // 1. On définit l'ordre chronologique correct des mois.
+    const chronologicalOrder = ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"];
+
+    // 2. On trie les mois sélectionnés par l'utilisateur en se basant sur leur position dans notre tableau de référence.
+    const sortedMonths = months.sort((a, b) => {
+      return chronologicalOrder.indexOf(a) - chronologicalOrder.indexOf(b);
+    });
+
+    // 3. On utilise maintenant la liste triée (`sortedMonths`) pour initialiser les états.
+    setSelectedMonths(sortedMonths);
     const initialAssignments = {};
-    months.forEach(month => { initialAssignments[month] = []; });
+    sortedMonths.forEach(month => { initialAssignments[month] = []; });
     setMonthCardAssignments(initialAssignments);
     setIsMonthSelectorOpen(false);
     setNextMonthIndex(0);
