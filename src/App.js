@@ -157,6 +157,7 @@ function App() {
       isMonthModeSave: true,
       months: selectedMonths,
       assignments: monthCardAssignments,
+      nextIndex: nextMonthIndex,
     };
     setSavedSessions(prev => [newSession, ...prev]);
     alert("Tirage mensuel sauvegardé !");
@@ -186,7 +187,7 @@ function App() {
       setSelectedMonths(sessionToLoad.months);
       setMonthCardAssignments(sessionToLoad.assignments);
       setStandardSelectedCards([]);
-      setNextMonthIndex(0);
+      setNextMonthIndex(sessionToLoad.nextIndex || 0); 
     } else {
       setIsMonthMode(false);
       setStandardSelectedCards(sessionToLoad.cards);
