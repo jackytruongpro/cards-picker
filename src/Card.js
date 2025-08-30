@@ -10,8 +10,8 @@ const Card = ({ id, contentImage, coverImage, isFlipped, onFlip, onAnimate, isHi
       onFlip(id);
       const rect = cardRef.current.getBoundingClientRect();
       
-      // ✅ MODIFICATION ICI : On ajoute un `timestamp` pour rendre chaque clic unique
-      onAnimate({ id, contentImage, rect, timestamp: Date.now() });
+      // ✅ On envoie maintenant aussi la `coverImage`
+      onAnimate({ id, contentImage, coverImage, rect, timestamp: Date.now() });
     }
   };
 
@@ -21,18 +21,15 @@ const Card = ({ id, contentImage, coverImage, isFlipped, onFlip, onAnimate, isHi
       className={`card ${isFlipped ? 'is-flipped' : ''} ${isHidden ? 'is-hidden' : ''}`} 
       onClick={handleClick}
     >
-      {/* ... (le reste du composant ne change pas) ... */}
       <div className="card-inner">
         <div 
           className="card-face card-face--front" 
           style={{ backgroundImage: `url(${coverImage})` }}
-        >
-        </div>
+        />
         <div 
           className="card-face card-face--back" 
           style={{ backgroundImage: `url(${contentImage})` }}
-        >
-        </div>
+        />
       </div>
     </div>
   );

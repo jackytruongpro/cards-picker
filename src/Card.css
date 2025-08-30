@@ -9,7 +9,7 @@
   cursor: pointer;
   background-color: transparent;
   border-radius: 50%;
-  transition: transform 0.7s, opacity 0.3s ease-in-out;
+  transition: transform 0.7s; 
 }
 
 .card-inner {
@@ -42,11 +42,9 @@
   transform: rotateY(180deg);
 }
 
-/* ✅ NOUVEAU STYLE : Ce qui se passe quand la carte doit disparaître */
 .card.is-hidden {
-  opacity: 0;
-  transform: scale(0.95); /* Effet de léger rétrécissement */
-  /* Rend la carte non cliquable pendant qu'elle est invisible */
+  opacity: 0; /* Disparaît instantanément */
+  transform: scale(0.95);
   pointer-events: none; 
 }
 

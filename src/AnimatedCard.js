@@ -6,22 +6,21 @@ const AnimatedCard = ({ cardData, onAnimationEnd }) => {
   const [animationState, setAnimationState] = useState('entering');
 
   useEffect(() => {
-    // 1. Juste après l'affichage, on lance l'animation "zoom-in"
+    // 1. Lance l'animation "active" (zoom et retournement)
     const enterTimeout = setTimeout(() => {
       setAnimationState('active');
-    }, 50); // Petit délai pour que la transition CSS s'applique
+    }, 50);
 
-    // 2. Après un moment, on lance l'animation "zoom-out"
+    // 2. Lance l'animation de "départ" (retour à la place et à l'état initial)
     const exitTimeout = setTimeout(() => {
       setAnimationState('leaving');
-    }, 1500); // Durée pendant laquelle la carte reste agrandie
+    }, 1800); // On laisse un peu plus de temps pour admirer la carte
 
-    // 3. Une fois l'animation de sortie terminée, on détruit le composant
+    // 3. Détruit le composant une fois l'animation terminée
     const endTimeout = setTimeout(() => {
       onAnimationEnd();
-    }, 2000); // Doit être plus long que la durée de la transition CSS
+    }, 2300); // Durée totale de l'effet
 
-    // Nettoyage des timers si le composant est détruit avant la fin
     return () => {
       clearTimeout(enterTimeout);
       clearTimeout(exitTimeout);
@@ -33,17 +32,30 @@ const AnimatedCard = ({ cardData, onAnimationEnd }) => {
     return null;
   }
 
-  // Styles de la carte animée
+  // Styles pour la position et la taille de la carte animée
   const style = {
-    // Position initiale : exactement là où se trouve la carte cliquée
     '--start-top': `${cardData.rect.top}px`,
     '--start-left': `${cardData.rect.left}px`,
     '--start-width': `${cardData.rect.width}px`,
     '--start-height': `${cardData.rect.height}px`,
-    backgroundImage: `url(${cardData.contentImage})`,
   };
 
-  return <div style={style} className={`animated-card ${animationState}`} />;
+  return (
+    <div style={style} className={`animated-card-container ${animationState}`}>
+      <div className="animated-card-inner">
+        {/* Face avant (la couverture) */}
+        <div 
+          className="animated-card-face animated-card-front"
+          style={{ backgroundImage: `url(${cardData.coverImage})` }}
+        />
+        {/* Face arrière (l'illustration) */}
+        <div 
+          className="animated-card-face animated-card-back"
+          style={{ backgroundImage: `url(${cardData.contentImage})` }}
+        />
+      </div>
+    </div>
+  );
 };
 
 export default AnimatedCard;
