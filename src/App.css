@@ -40,12 +40,71 @@ p {
   margin: 20px auto;
 }
 
+/* Conteneur pour le toggle et le nouveau bouton */
+.app-controls {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 30px;
+}
 
-/* -- Styles pour PC (écrans plus larges que 768px) -- */
+/* Style du bouton "Gérer les Cartes" */
+.exclusion-button {
+  background-color: #f8f9fa;
+  border: 1px solid #dee2e6;
+  color: #343a40;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.exclusion-button:hover {
+  background-color: #e2e6ea;
+  border-color: #dae0e5;
+}
+
+/* Style pour la nouvelle section d'exclusion */
+.deck-exclusion {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  justify-content: center;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
+
+.deck-exclusion label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.deck-exclusion input[type="checkbox"] {
+  width: 1.1em;
+  height: 1.1em;
+} 
+
+.exclusion-button:hover {
+  background-color: #e2e6ea;
+  border-color: #dae0e5;
+}
+
+/* Sur PC, on met les contrôles côte à côte */
 @media (min-width: 768px) {
   .card-grid {
     /* On force 20 colonnes sur PC */
     grid-template-columns: repeat(20, 1fr);
     gap: 10px; /* Espace un peu plus grand sur PC */
+  }
+
+  .app-controls {
+    flex-direction: row;
+    justify-content: center;
   }
 }

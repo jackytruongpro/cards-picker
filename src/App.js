@@ -12,12 +12,16 @@ import MonthSelectorModal from './MonthSelectorModal';
 import MonthModePanel from './MonthModePanel';
 import GlobalSavesButton from './GlobalSavesButton';
 import AnimatedCard from './AnimatedCard';
+import CardExclusionModal from './CardExclusionModal'; // Assurez-vous que ce composant est bien importé
 import './App.css';
 
-// --- Constantes et Fonctions Utilitaires ---
+// --- Import du fichier de définition des catégories ---
+import categoryMappings from './cardCategories.json';
 
+// --- Constantes et Fonctions Utilitaires ---
 const CARD_COVER_IMAGE = '/images/cards/oracle/tea_leaf/card_cover/tea-leaf-cover.png';
 const LOCAL_STORAGE_KEY = 'oracle_card_saves';
+const EXCLUDED_CARDS_KEY = 'oracle_excluded_cards';
 
 const shuffleArray = (array) => {
   const newArray = [...array];
@@ -36,26 +40,21 @@ const images = importAll(require.context('./assets/images/cards/oracle/tea_leaf/
 
 
 // --- Composant Principal de l'Application ---
-
 function App() {
-  // --- ÉTATS DE L'APPLICATION ---
-
-  // Données de base des cartes
+  // --- ÉTATS ---
   const [allPossibleCards, setAllPossibleCards] = useState([]);
   const [cardsOnGrid, setCardsOnGrid] = useState([]);
   
-  // États pour le mode de tirage STANDARD
+  const [excludedCardIds, setExcludedCardIds] = useState([]);
+  const [isExclusionModalOpen, setIsExclusionModalOpen] = useState(false);
+
   const [standardSelectedCards, setStandardSelectedCards] = useState([]);
   const [savedSessions, setSavedSessions] = useState([]);
-
-  // États pour le MODE MOIS
   const [isMonthMode, setIsMonthMode] = useState(false);
   const [isMonthSelectorOpen, setIsMonthSelectorOpen] = useState(false);
   const [selectedMonths, setSelectedMonths] = useState([]);
   const [monthCardAssignments, setMonthCardAssignments] = useState({});
   const [nextMonthIndex, setNextMonthIndex] = useState(0);
-
-  // États pour l'interface (Modales, Panneaux, Animations)
   const [enlargedCard, setEnlargedCard] = useState(null);
   const [isSliderOpen, setIsSliderOpen] = useState(false);
   const [sliderStartIndex, setSliderStartIndex] = useState(0);
@@ -63,21 +62,31 @@ function App() {
   const [isSavesPanelOpen, setIsSavesPanelOpen] = useState(false);
   const [animatingCard, setAnimatingCard] = useState(null);
 
+  // --- EFFETS ---
 
-  // --- EFFETS (useEffect Hooks) ---
-
-  // Initialisation des cartes au chargement
   useEffect(() => {
-    const loadedCards = images.map((imagePath, index) => {
+    const allCards = images.map((imagePath, index) => {
       const nameWithExtension = imagePath.split('/').pop();
-      const name = nameWithExtension.split('.')[0];
+      const name = nameWithExtension.split('.')[0].toLowerCase();
       return { id: index + 1, name, contentImage: imagePath, coverImage: CARD_COVER_IMAGE };
     });
-    setAllPossibleCards(loadedCards);
-    setCardsOnGrid(shuffleArray(loadedCards));
+    setAllPossibleCards(allCards);
+
+    const savedExclusions = localStorage.getItem(EXCLUDED_CARDS_KEY);
+    const exclusions = savedExclusions ? JSON.parse(savedExclusions) : [];
+    setExcludedCardIds(exclusions);
   }, []);
 
-  // Gestion de la persistance des sauvegardes
+  useEffect(() => {
+    if (allPossibleCards.length === 0) return;
+    
+    const availableCards = allPossibleCards.filter(card => !excludedCardIds.includes(card.id));
+    setCardsOnGrid(shuffleArray(availableCards));
+
+    handleStandardReset(false);
+    handleMonthModeReset(false);
+  }, [allPossibleCards, excludedCardIds]);
+
   useEffect(() => {
     try {
       const storedSaves = localStorage.getItem(LOCAL_STORAGE_KEY);
@@ -92,162 +101,49 @@ function App() {
   }, [savedSessions]);
 
 
-  // --- GESTIONNAIRES D'ÉVÉNEMENTS (Handlers) ---
-
-  const handleToggleMonthMode = (activated) => {
-    setCardsOnGrid(prevCards => shuffleArray(prevCards));
-    setIsMonthMode(activated);
-    if (activated) {
-      setStandardSelectedCards([]);
-      setIsMonthSelectorOpen(true);
-    } else {
-      setSelectedMonths([]);
-      setMonthCardAssignments({});
-      setNextMonthIndex(0);
-    }
-  };
-
-const handleMonthSelectionConfirm = (months) => {
-    // 1. On définit l'ordre chronologique correct des mois.
-    const chronologicalOrder = ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"];
-
-    // 2. On trie les mois sélectionnés par l'utilisateur en se basant sur leur position dans notre tableau de référence.
-    const sortedMonths = months.sort((a, b) => {
-      return chronologicalOrder.indexOf(a) - chronologicalOrder.indexOf(b);
-    });
-
-    // 3. On utilise maintenant la liste triée (`sortedMonths`) pour initialiser les états.
-    setSelectedMonths(sortedMonths);
-    const initialAssignments = {};
-    sortedMonths.forEach(month => { initialAssignments[month] = []; });
-    setMonthCardAssignments(initialAssignments);
-    setIsMonthSelectorOpen(false);
-    setNextMonthIndex(0);
-  };
-
-  const handleCardSelect = (cardId) => {
-    const cardToAdd = allPossibleCards.find(card => card.id === cardId);
-    if (!cardToAdd) return;
-
-    if (isMonthMode) {
-      if (selectedMonths.length === 0) return;
-      const isAlreadyAssigned = Object.values(monthCardAssignments).flat().some(card => card.id === cardId);
-      if (isAlreadyAssigned) return;
-
-      const currentMonth = selectedMonths[nextMonthIndex];
-      setMonthCardAssignments(prev => ({ ...prev, [currentMonth]: [...prev[currentMonth], cardToAdd] }));
-      setNextMonthIndex(prevIndex => (prevIndex + 1) % selectedMonths.length);
-    } else {
-      if (!standardSelectedCards.find(card => card.id === cardId)) {
-        setStandardSelectedCards(prev => [...prev, cardToAdd]);
-      }
-    }
-  };
-
-  const handleCardAnimation = (cardData) => {
-    setAnimatingCard(cardData);
-  };
-
-  const handleMonthModeReset = () => {
-    setCardsOnGrid(prevCards => shuffleArray(prevCards));
-    const initialAssignments = {};
-    selectedMonths.forEach(month => { initialAssignments[month] = []; });
-    setMonthCardAssignments(initialAssignments);
-    setNextMonthIndex(0);
-  };
-
-  const handleMonthModeSave = () => {
-    const sessionName = prompt("Entrez un nom pour ce tirage mensuel :");
-    if (sessionName === null || sessionName.trim() === "") return;
-    const newSession = {
-      id: Date.now(),
-      date: new Date().toLocaleString('fr-FR'),
-      name: sessionName,
-      isMonthModeSave: true,
-      months: selectedMonths,
-      assignments: monthCardAssignments,
-      nextIndex: nextMonthIndex,
-    };
-    setSavedSessions(prev => [newSession, ...prev]);
-    alert("Tirage mensuel sauvegardé !");
-  };
-
-  const handleStandardReset = () => {
-    setStandardSelectedCards([]);
-    setCardsOnGrid(shuffleArray(cardsOnGrid));
-  };
-
-  const handleStandardSave = () => {
-    if (standardSelectedCards.length === 0) return alert("Sélection vide.");
-    const defaultName = `Tirage du ${new Date().toLocaleDateString('fr-FR')}`;
-    const sessionName = prompt("Entrez un nom pour ce tirage :", defaultName);
-    if (sessionName === null || sessionName.trim() === "") return;
-    const newSession = { id: Date.now(), date: new Date().toLocaleString('fr-FR'), name: sessionName, cards: standardSelectedCards };
-    setSavedSessions(prev => [newSession, ...prev]);
-    alert(`Tirage "${sessionName}" sauvegardé !`);
-  };
-
-  const handleLoadSession = (sessionId) => {
-    const sessionToLoad = savedSessions.find(s => s.id === sessionId);
-    if (!sessionToLoad) return;
-
-    if (sessionToLoad.isMonthModeSave) {
-      setIsMonthMode(true);
-      setSelectedMonths(sessionToLoad.months);
-      setMonthCardAssignments(sessionToLoad.assignments);
-      setStandardSelectedCards([]);
-      setNextMonthIndex(sessionToLoad.nextIndex || 0); 
-    } else {
-      setIsMonthMode(false);
-      setStandardSelectedCards(sessionToLoad.cards);
-      setSelectedMonths([]);
-      setMonthCardAssignments({});
-      setNextMonthIndex(0);
-    }
-    setIsSavesPanelOpen(false);
-  };
+  // --- HANDLERS ---
   
-  const handleDeleteSession = (sessionId) => {
-    if (window.confirm("Supprimer ce tirage ?")) {
-      setSavedSessions(prev => prev.filter(s => s.id !== sessionId));
-    }
+  const handleExclusionConfirm = (newlyExcludedIds) => {
+    localStorage.setItem(EXCLUDED_CARDS_KEY, JSON.stringify(newlyExcludedIds));
+    setExcludedCardIds(newlyExcludedIds);
   };
 
-  const handleOpenSlider = (cardsToShow, startIndex = 0) => {
-    if (cardsToShow && cardsToShow.length > 0) {
-      setCardsForSlider(cardsToShow);
-      setSliderStartIndex(startIndex);
-      setIsSliderOpen(true);
-    }
-  };
-
-  const displayedSelectedIds = isMonthMode
-    ? Object.values(monthCardAssignments).flat().map(c => c.id)
-    : standardSelectedCards.map(c => c.id);
+  const handleToggleMonthMode = (activated) => { setCardsOnGrid(prevCards => shuffleArray(prevCards)); setIsMonthMode(activated); if (activated) { setStandardSelectedCards([]); setIsMonthSelectorOpen(true); } else { setSelectedMonths([]); setMonthCardAssignments({}); setNextMonthIndex(0); } };
+  const handleMonthSelectionConfirm = (months) => { const chronologicalOrder = ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"]; const sortedMonths = months.sort((a, b) => chronologicalOrder.indexOf(a) - chronologicalOrder.indexOf(b)); setSelectedMonths(sortedMonths); const initialAssignments = {}; sortedMonths.forEach(month => { initialAssignments[month] = []; }); setMonthCardAssignments(initialAssignments); setIsMonthSelectorOpen(false); setNextMonthIndex(0); };
+  const handleCardSelect = (cardId) => { const cardToAdd = allPossibleCards.find(card => card.id === cardId); if (!cardToAdd) return; if (isMonthMode) { if (selectedMonths.length === 0) return; const isAlreadyAssigned = Object.values(monthCardAssignments).flat().some(card => card.id === cardId); if (isAlreadyAssigned) return; const currentMonth = selectedMonths[nextMonthIndex]; setMonthCardAssignments(prev => ({ ...prev, [currentMonth]: [...prev[currentMonth], cardToAdd] })); setNextMonthIndex(prevIndex => (prevIndex + 1) % selectedMonths.length); } else { if (!standardSelectedCards.find(card => card.id === cardId)) { setStandardSelectedCards(prev => [...prev, cardToAdd]); } } };
+  const handleCardAnimation = (cardData) => { setAnimatingCard(cardData); };
+  const handleMonthModeReset = (shouldShuffle = true) => { if (shouldShuffle) { setCardsOnGrid(prevCards => shuffleArray(prevCards)); } const initialAssignments = {}; selectedMonths.forEach(month => { initialAssignments[month] = []; }); setMonthCardAssignments(initialAssignments); setNextMonthIndex(0); };
+  const handleMonthModeSave = () => { const sessionName = prompt("Entrez un nom pour ce tirage mensuel :"); if (sessionName === null || sessionName.trim() === "") return; const newSession = { id: Date.now(), date: new Date().toLocaleString('fr-FR'), name: sessionName, isMonthModeSave: true, months: selectedMonths, assignments: monthCardAssignments, nextIndex: nextMonthIndex, }; setSavedSessions(prev => [newSession, ...prev]); alert("Tirage mensuel sauvegardé !"); };
+  const handleStandardReset = (shouldShuffle = true) => { setStandardSelectedCards([]); if (shouldShuffle) { setCardsOnGrid(shuffleArray(cardsOnGrid)); } };
+  const handleStandardSave = () => { if (standardSelectedCards.length === 0) return alert("Sélection vide."); const defaultName = `Tirage du ${new Date().toLocaleDateString('fr-FR')}`; const sessionName = prompt("Entrez un nom pour ce tirage :", defaultName); if (sessionName === null || sessionName.trim() === "") return; const newSession = { id: Date.now(), date: new Date().toLocaleString('fr-FR'), name: sessionName, cards: standardSelectedCards }; setSavedSessions(prev => [newSession, ...prev]); alert(`Tirage "${sessionName}" sauvegardé !`); };
+  const handleLoadSession = (sessionId) => { const sessionToLoad = savedSessions.find(s => s.id === sessionId); if (!sessionToLoad) return; if (sessionToLoad.isMonthModeSave) { setIsMonthMode(true); setSelectedMonths(sessionToLoad.months); setMonthCardAssignments(sessionToLoad.assignments); setStandardSelectedCards([]); setNextMonthIndex(sessionToLoad.nextIndex || 0); } else { setIsMonthMode(false); setStandardSelectedCards(sessionToLoad.cards); setSelectedMonths([]); setMonthCardAssignments({}); setNextMonthIndex(0); } setIsSavesPanelOpen(false); };
+  const handleDeleteSession = (sessionId) => { if (window.confirm("Supprimer ce tirage ?")) { setSavedSessions(prev => prev.filter(s => s.id !== sessionId)); } };
+  const handleOpenSlider = (cardsToShow, startIndex = 0) => { if (cardsToShow && cardsToShow.length > 0) { setCardsForSlider(cardsToShow); setSliderStartIndex(startIndex); setIsSliderOpen(true); } };
+  
+  const displayedSelectedIds = isMonthMode ? Object.values(monthCardAssignments).flat().map(c => c.id) : standardSelectedCards.map(c => c.id);
 
     
   // --- RENDU JSX ---
   return (
     <div className="App">
       <GlobalSavesButton onOpenSaves={() => setIsSavesPanelOpen(true)} />
-
-      {isMonthMode && selectedMonths.length > 0 && (
-        <MonthModePanel 
-          months={selectedMonths}
-          assignments={monthCardAssignments}
-          onReset={handleMonthModeReset}
-          onSave={handleMonthModeSave}
-          onViewMonth={handleOpenSlider}
-        />
-      )}
-
+      {isMonthMode && selectedMonths.length > 0 && ( <MonthModePanel months={selectedMonths} assignments={monthCardAssignments} onReset={() => handleMonthModeReset(true)} onSave={handleMonthModeSave} onViewMonth={handleOpenSlider} /> )}
+      
       <main className="main-content">
-        <h1>Tea Leaf Oracle Picker</h1>
-        <p>Use me when you are in an emergency hehe - puwi</p>
-        <MonthModeToggle 
-          isChecked={isMonthMode} 
-          onChange={handleToggleMonthMode} 
-        />
+        <h1>Mon Tirage de Cartes</h1>
+        <p>Cliquez sur une carte pour la révéler, puis sauvegardez votre tirage.</p>
+        <div className="app-controls">
+          <MonthModeToggle 
+            isChecked={isMonthMode} 
+            onChange={handleToggleMonthMode} 
+          />
+          <button 
+            className="exclusion-button"
+            onClick={() => setIsExclusionModalOpen(true)}
+          >
+            Gérer les Cartes
+          </button>
+        </div>
         <div className="card-grid">
           {cardsOnGrid.map(card => (
             <Card 
@@ -262,48 +158,21 @@ const handleMonthSelectionConfirm = (months) => {
         </div>
       </main>
 
-      <MonthSelectorModal
-        isOpen={isMonthSelectorOpen}
-        onClose={() => setIsMonthSelectorOpen(false)}
-        onConfirm={handleMonthSelectionConfirm}
+      <CardExclusionModal
+        isOpen={isExclusionModalOpen}
+        onClose={() => setIsExclusionModalOpen(false)}
+        onConfirm={handleExclusionConfirm}
+        allCards={allPossibleCards}
+        initialExclusions={excludedCardIds}
+        categoryMappings={categoryMappings}
       />
       
-      {!isMonthMode && (
-        <SelectionBar 
-          selectedCards={standardSelectedCards}
-          onCardClick={setEnlargedCard}
-          onOpenSlider={() => handleOpenSlider(standardSelectedCards, 0)}
-          onSave={handleStandardSave}
-          onReset={handleStandardReset}
-        />
-      )}
-      
-      <SavesPanel
-        isOpen={isSavesPanelOpen}
-        sessions={savedSessions}
-        onClose={() => setIsSavesPanelOpen(false)}
-        onLoad={handleLoadSession}
-        onDelete={handleDeleteSession}
-        onViewSession={handleOpenSlider}
-      />
-
+      <MonthSelectorModal isOpen={isMonthSelectorOpen} onClose={() => setIsMonthSelectorOpen(false)} onConfirm={handleMonthSelectionConfirm} />
+      {!isMonthMode && ( <SelectionBar selectedCards={standardSelectedCards} onCardClick={setEnlargedCard} onOpenSlider={() => handleOpenSlider(standardSelectedCards, 0)} onSave={handleStandardSave} onReset={() => handleStandardReset(true)} /> )}
+      <SavesPanel isOpen={isSavesPanelOpen} sessions={savedSessions} onClose={() => setIsSavesPanelOpen(false)} onLoad={handleLoadSession} onDelete={handleDeleteSession} onViewSession={handleOpenSlider} />
       {enlargedCard && <CardDetailModal card={enlargedCard} onClose={() => setEnlargedCard(null)} />}
-      
-      {isSliderOpen && (
-        <SliderModal 
-          cards={cardsForSlider} 
-          startIndex={sliderStartIndex} 
-          onClose={() => setIsSliderOpen(false)} 
-        />
-      )}
-
-      {animatingCard && (
-        <AnimatedCard 
-          key={animatingCard.timestamp} 
-          cardData={animatingCard}
-          onAnimationEnd={() => setAnimatingCard(null)}
-        />
-      )}
+      {isSliderOpen && ( <SliderModal cards={cardsForSlider} startIndex={sliderStartIndex} onClose={() => setIsSliderOpen(false)} /> )}
+      {animatingCard && ( <AnimatedCard key={animatingCard.timestamp} cardData={animatingCard} onAnimationEnd={() => setAnimatingCard(null)} /> )}
     </div>
   );
 }
